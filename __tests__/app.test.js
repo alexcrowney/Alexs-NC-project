@@ -16,7 +16,7 @@ describe("1. GET /api/topics", () => {
         const {
           body: { topics },
         } = response;
-        console.log(topics, "<---TEST 1");
+        // console.log(topics, "<---TEST");
         expect(topics).toHaveLength(3);
         topics.forEach((topic) => {
           expect(topic).toEqual(
@@ -39,7 +39,7 @@ describe("2. GET /api/articles/:article_id", () => {
         const {
           body: { article },
         } = response;
-        console.log(article, "<--- TEST 2");
+        // console.log(article, "<--- TEST");
         expect(article).toEqual({
           article_id: 1,
           title: "Living in the shadow of a great man",
@@ -53,7 +53,32 @@ describe("2. GET /api/articles/:article_id", () => {
   });
 });
 
-describe("3. 404 Path not found", () => {
+describe("3. PATCH /api/articles/:article_id", () => {
+  test("status:200, responds with article, with updated vote property", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then((response) => {
+        // console.log(response);
+        const {
+          body: { article },
+        } = response;
+        // console.log(article, "<---- TEST");
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 105,
+        });
+      });
+  });
+});
+
+describe("4. 404 Path not found", () => {
   test("status:404, responds with error message", () => {
     return request(app)
       .get("/api/not-a-valid-path")
@@ -64,3 +89,14 @@ describe("3. 404 Path not found", () => {
       });
   });
 });
+
+// describe("5. 404 Valid but non-existent article ID", () => {
+//   test("status:404, responds with error message", () => {
+//     return request(app)
+//       .get("/api/articles/99999")
+//       .expect(404)
+//       .then(({ body: { msg } }) => {
+//         expect(msg).toBe("Article not found");
+//       });
+//   });
+// });
