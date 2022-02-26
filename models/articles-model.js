@@ -7,14 +7,14 @@ exports.selectTopics = () => {
 };
 
 exports.selectArticleById = (article_id) => {
-  return (
-    db
-      // '$1' prevents SQL injection
-      .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
-      .then(({ rows }) => {
-        return rows[0];
-      })
-  );
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "Path not found" });
+      }
+      return rows[0];
+    });
 };
 
 exports.updateArticleById = (article_id, inc_votes) => {
@@ -24,7 +24,12 @@ exports.updateArticleById = (article_id, inc_votes) => {
       [inc_votes, article_id]
     )
     .then(({ rows }) => {
-      // console.log(response, "<--- response");
       return rows[0];
     });
+};
+
+exports.selectUsers = () => {
+  return db.query("SELECT * FROM users;").then(({ rows }) => {
+    return rows;
+  });
 };
