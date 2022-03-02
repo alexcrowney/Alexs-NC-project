@@ -8,7 +8,14 @@ exports.selectTopics = () => {
 
 exports.selectArticleById = (article_id) => {
   return db
-    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .query(
+      `SELECT articles.*, COUNT (comments.comment_id) AS comment_count 
+    FROM articles
+    LEFT JOIN comments ON comments.article_id = articles.article_id
+    WHERE articles.article_id = $1
+    GROUP BY articles.article_id`,
+      [article_id]
+    )
     .then(({ rows }) => {
       if (rows.length === 0) {
         return Promise.reject({ status: 404, msg: "Path not found" });
@@ -41,3 +48,21 @@ exports.selectArticles = () => {
       return rows;
     });
 };
+
+// exports.selectArticleByIdWithCommentCount = (article_id) => {
+//   return db
+//     .query(
+//       `SELECT * FROM articles, COUNT (comments.comment_id) AS comment_count
+//       WHERE article_id = $1
+//       FROM articles
+//       LEFT JOIN comments ON comments.article_id = articles.article_id
+//       GROUP BY articles.article_id`,
+//       [article_id]
+//     )
+//     .then(({ rows }) => {
+//       if (rows.length === 0) {
+//         return Promise.reject({ status: 404, msg: "Path not found" });
+//       }
+//       return rows[0];
+//     });
+// };

@@ -187,3 +187,28 @@ describe("10. GET api/articles", () => {
       });
   });
 });
+
+// TICKET 5
+describe.only("11. GET /api/articles/:article_id (comment count)", () => {
+  test("status: 200, responds with an article object with comment count", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((response) => {
+        const {
+          body: { article },
+        } = response;
+        console.log(article);
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: expect.any(String),
+          votes: 100,
+          comment_count: "11",
+        });
+      });
+  });
+});

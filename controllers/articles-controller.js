@@ -4,6 +4,7 @@ const {
   updateArticleById,
   selectUsers,
   selectArticles,
+  selectArticleByIdWithCommentCount,
 } = require("../models/articles-model.js");
 
 exports.getTopics = (req, res, next) => {
@@ -48,3 +49,12 @@ exports.getArticles = (req, res, next) => {
     })
     .catch((err) => next(err));
 };
+
+// exports.getArticleByIdWithCommentCount = (req, res, next) => {
+//   const { article_id } = req.params;
+//   selectArticleByIdWithCommentCount(article_id)
+//     .then((article) => {
+//       res.status(200).send({ article });
+//     })
+//     .catch((err) => next(err));
+// };
