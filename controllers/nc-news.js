@@ -16,3 +16,12 @@ exports.getArticleById = (req, res, next) => {
     })
     .catch((err) => next(err));
 };
+
+exports.getCommentsById = (req, res, next) => {
+  const { article_id } = req.params;
+  selectCommentsById(article_id)
+    .then((comments) => {
+      res.status(200).send([{ article: { comments } }]);
+    })
+    .catch((err) => next(err));
+};

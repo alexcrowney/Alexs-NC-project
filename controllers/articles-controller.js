@@ -5,6 +5,8 @@ const {
   selectUsers,
   selectArticles,
   selectArticleByIdWithCommentCount,
+  selectCommentsByArticleId,
+  insertCommentsByArticleId,
 } = require("../models/articles-model.js");
 
 exports.getTopics = (req, res, next) => {
@@ -58,3 +60,29 @@ exports.getArticles = (req, res, next) => {
 //     })
 //     .catch((err) => next(err));
 // };
+
+exports.getCommentsById = (req, res, next) => {
+  const { article_id } = req.params;
+  // const id = req.params.article_id;
+  selectCommentsByArticleId(article_id)
+    .then((comments) => {
+      res.status(200).send(comments);
+    })
+    .catch((err) => next(err));
+};
+
+exports.postCommentById = (req, res, next) => {
+  // const { article_id } = req.params;
+  // const { author, body } = req.body;
+  const id = req.params.article_id;
+  const author = req.body.author;
+  const body = req.body.body;
+
+  console.log("req.body >>>", req.body);
+
+  insertCommentsByArticleId(id, author, body)
+    .then((comment) => {
+      res.status(200).send({ comment: comment });
+    })
+    .catch((err) => next(err));
+};
